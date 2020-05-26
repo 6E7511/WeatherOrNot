@@ -1,6 +1,7 @@
 import datetime
 import main
-import weather
+import weather_static
+import  weather_obj
 try:
     # for Python2
     import Tkinter as Tk
@@ -9,9 +10,6 @@ except ImportError:
     import tkinter as Tk
 
 session = main.Main()
-dev = session.save["settings"]["dev"]
-default_code = session.save["settings"]["default_code"]
-
 
 class DevOps:
     @staticmethod
@@ -70,7 +68,7 @@ def add_city_window_event():
         name = add_city_name_entry.get()
         code = add_city_code_entry.get()
         if code == "":
-            code = default_code
+            code = session.save["settings"]["default_country"]
         session.add_city(name, code)
         root.attributes("-topmost", True)
         cities_listbox_update()
@@ -99,11 +97,12 @@ def cities_listbox_update():
     for item in session.cities_obj:
         cities_listbox.insert(i, item.name + ", " + item.country_code)
         i += 1
-# TODO auto select first
 
 
 cities_listbox_update()
 cities_listbox.grid(row=0, columnspan=3, padx=2, pady=2)
+
+# TODO implement forecast & icons
 
 
 def query_weather():
@@ -111,16 +110,12 @@ def query_weather():
         index = cities_listbox.curselection()[0]
     except IndexError:
         index = 0
-    data = weather.query_weather(session.cities_obj[index], dev)
+
+    city = session.cities_obj[index]
     weather_text.delete("1.0", Tk.END)
-    weather_text.insert("1.0", "Name : " + session.cities_obj[index].name + "\nCountry : " + session.cities_obj[index].country_code
-            + "\nWetter : " + data["weather"][0]["main"] + "\nTemperatur : " + str(round(data["main"]["temp"] - 273.15, 2)) +
-            " C°\n" + "Gefühlt : " + str(round(data["main"]["feels_like"] - 273.15, 2)) +
-            " C°\n" + "Luftfeuchtigkeit : " + str(data["main"]["humidity"]) + "%\n" + "Sonnuntergang : " +
-            str(datetime.datetime.fromtimestamp(data["sys"]["sunset"]).strftime('%H:%M:%S')) +
-            "\nSonnenaufgang : " + str(datetime.datetime.fromtimestamp(data["sys"]["sunrise"]).strftime('%H:%M:%S'))
-            )
-# TODO show local time by timezone + UTC and correct local time in sun
+    weather_text.insert("1.0", weather_static.build_weather(weather_obj.Weather(city, session.save["settings"]["dev"])))
+
+# TODO fix timezones + extra data based on curr_weather
 
 
 query_city_button = Tk.Button(list_mng, command=query_weather, text="Get weather")
@@ -136,13 +131,15 @@ def remove_city_event():
     cities_listbox_update()
 
 
-def save_event():
-    response = session.save_event()
-    if response:
-        root.destroy()
-# saves current state to save.json
+dev_var = Tk.BooleanVar
 
-# TODO implement settings
+
+def save_event():
+    print(dev_var)
+    response = session.save_event()
+    if not session.dev:
+        root.destroy()
+# TODO implement change settings
 
 
 remove_city_button = Tk.Button(list_mng, command=remove_city_event, text=" - ")
@@ -150,5 +147,9 @@ remove_city_button.grid(row=1, column=2, ipadx=2)
 
 save_button = Tk.Button(list_mng, command=save_event, text="Save & Quit")
 save_button.grid(row=3, columnspan=3)
+
+
+dev_button = Tk.Checkbutton(root, text="dev_ops", variable=dev_var, onvalue=True, offvalue=False)
+dev_button.grid(row=3)
 
 root.mainloop()

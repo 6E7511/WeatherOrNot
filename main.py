@@ -1,14 +1,12 @@
 import json
 import cities
-import weather
-import settings
-
+import weather_static
 
 class Main:
     save = {}
     cities_obj = []
     settings_obj = []
-    save_file = "save.json"
+    save_file = "WeatherOrNot\save.json"
 
     def __init__(self):
         self.save["cities"] = []
@@ -18,32 +16,33 @@ class Main:
 
         if not self.save["settings"]:
             self.initialize_settings()
-        else:
-            for item in self.save["settings"]:
-                self.settings_obj.append(settings.Setting(item, self.save["settings"][item]))
-            for item in self.settings_obj:
-                if item.name == "dev":
-                    if item.value:
-                        print(self.save["settings"])
+        # else:
+        #     for item in self.save["settings"]:
+        #         self.settings_obj.append(settings.Setting(item, self.save["settings"][item]))
+        #     for item in self.settings_obj:
+        #         if item.name == "dev":
+        #             if item.value:
+        print(self.save["settings"])
 
     def initialize_settings(self):
-        self.settings_obj.append(settings.Setting("default_code", "DE"))
-        self.settings_obj.append(settings.Setting("dev", False))
-        self.save["settings"] = {}
-        for item in self.settings_obj:
-            self.save["settings"][item.name] = item.value
+        # self.settings_obj.append(settings.Setting("default_code", "DE"))
+        # self.settings_obj.append(settings.Setting("dev", False))
+        self.save["settings"] = {
+            "dev": False,
+            "default_country": "DE"
+        }
 
     def load_save(self):
         try:
             save = open(self.save_file)
             return json.load(save)
         except IOError:
-            print("No save found")      # TODO GUI response to error 404
+            print("No save found")
             self.initialize_settings()
             return self.save
 
     def add_city(self, name, country_code):
-        city = weather.query_city(name, country_code)
+        city = weather_static.query_city(name, country_code)
         if city != 0:
             self.cities_obj.append(city)
             self.save["cities"].append({
