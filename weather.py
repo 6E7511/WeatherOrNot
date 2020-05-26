@@ -10,6 +10,9 @@ weather_key = "e71a27566a8253dbfd8169b0d0efb8ee"
 
 def query_city(city_name, country_code):
     city_name = city_name.replace(" ", "+")
+    city_name = city_name.replace("ü", "ue")
+    city_name = city_name.replace("ö", "oe")
+    city_name = city_name.replace("ä", "ae")
     url_final = url_base + city_name + "," + country_code + "&appid=" + weather_key
     try:
         data = json.load(urlopen(url_final))
