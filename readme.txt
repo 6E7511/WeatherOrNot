@@ -1,4 +1,5 @@
 Note : The script was written in Python 3.8 so if you haven't installed it run the included installer.
+       Display of time may not work if city timezone differs from system timezone
 
 This program allows you to setup a list of cities
 and view their weather statistics.
