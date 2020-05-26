@@ -3,6 +3,7 @@ import cities
 import weather
 import settings
 
+
 class Main:
     save = {}
     cities_obj = []
