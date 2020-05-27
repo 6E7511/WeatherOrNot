@@ -1,7 +1,7 @@
 import datetime
 import main
 import weather_static
-import  weather_obj
+import weather_obj
 try:
     # for Python2
     import Tkinter as Tk
@@ -11,10 +11,11 @@ except ImportError:
 
 session = main.Main()
 
+
 class DevOps:
     @staticmethod
     def output_cities_list():
-        if dev:
+        if session.save["settings"]["dev"]:
             for item in session.save["cities"]:
                 print(item["name"])
                 print(item["country"])
@@ -23,18 +24,12 @@ class DevOps:
 
     @staticmethod
     def output_cities_obj():
-        if dev:
+        if session.save["settings"]["dev"]:
             for item in session.cities_obj:
                 print(item.name)
                 print(item.country_code)
         else:
             print("No dev")
-
-    @staticmethod
-    def output_settings_obj():
-        if dev:
-            for item in session.settings_obj:
-                print(item.name + " " + item.value)
 # Developer options
 
 
@@ -79,16 +74,15 @@ def add_city_window_event():
 
     add_city_button = Tk.Button(add_city_window, text="Confirm", command=add_city_event)
     add_city_button.grid(row=3)
-    add_city_abbort_button = Tk.Button(add_city_window, text="Abort", command=add_city_abort_event)
-    add_city_abbort_button.grid(row=3, column=1)
+    add_city_abort_button = Tk.Button(add_city_window, text="Abort", command=add_city_abort_event)
+    add_city_abort_button.grid(row=3, column=1)
     # Add city event and window
 
 
 if not session.save["cities"]:
     add_city_window_event()
 
-
-cities_listbox = Tk.Listbox(list_mng)   # TODO implement sorting by country, alphabet ...
+cities_listbox = Tk.Listbox(list_mng)
 
 
 def cities_listbox_update():
@@ -97,12 +91,11 @@ def cities_listbox_update():
     for item in session.cities_obj:
         cities_listbox.insert(i, item.name + ", " + item.country_code)
         i += 1
+    cities_listbox.activate(1)
 
 
 cities_listbox_update()
 cities_listbox.grid(row=0, columnspan=3, padx=2, pady=2)
-
-# TODO implement forecast & icons
 
 
 def query_weather():
@@ -115,7 +108,7 @@ def query_weather():
     weather_text.delete("1.0", Tk.END)
     weather_text.insert("1.0", weather_static.build_weather(weather_obj.Weather(city, session.save["settings"]["dev"])))
 
-# TODO fix timezones + extra data based on curr_weather
+# TODO fix timezones
 
 
 query_city_button = Tk.Button(list_mng, command=query_weather, text="Get weather")
@@ -137,7 +130,6 @@ dev_var = Tk.BooleanVar()
 def save_event():
     session.save["settings"]["dev"] = dev_var.get()
     session.save_event()
-# TODO implement change settings
 
 
 remove_city_button = Tk.Button(list_mng, command=remove_city_event, text=" - ")

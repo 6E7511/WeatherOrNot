@@ -2,11 +2,12 @@ import json
 import cities
 import weather_static
 
+
 class Main:
     save = {}
     cities_obj = []
     settings_obj = []
-    save_file = "WeatherOrNot\save.json"
+    save_file = "save.json"
 
     def __init__(self):
         self.save["cities"] = []
