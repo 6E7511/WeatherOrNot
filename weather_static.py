@@ -39,7 +39,7 @@ def build_weather(weather):
     if weather.has_downfall:
         string += weather.downfall_typ + " in last" + weather.downfall_time + " : " + str(weather.downfall) + "\n"
     string += "Wind speed : " + str(weather.wind_speed) + "m/s\n"
-    string += "Wind direction : " + str(weather.wind_deg_num) + " " + weather.wind_deg_char + "\n"
+    string += "Wind direction : " + str(weather.wind_deg_num) + "°" + weather.wind_deg_char + "\n"
     string += "Humidity : " + str(weather.humidity) + " %\n"
     string += "Sunrise : " + str(datetime.datetime.fromtimestamp(weather.sunrise).strftime('%H:%M:%S')) + "\n"
     string += "Sunset : " + str(datetime.datetime.fromtimestamp(weather.sunset).strftime('%H:%M:%S')) + "\n"

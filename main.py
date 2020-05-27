@@ -61,7 +61,4 @@ class Main:
         with open(self.save_file, "w") as f:
             json.dump(self.save, f)
             f.close()
-        if not self.save["settings"]["dev"]:
-            quit()
-        else:
-            return True
+        quit()

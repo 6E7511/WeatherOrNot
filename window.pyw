@@ -40,7 +40,7 @@ class DevOps:
 
 root = Tk.Tk()
 root.config(width=300, height=500, padx=5, pady=5)
-list_mng = Tk.Frame(root)
+list_mng = Tk.Frame(root, padx=2)
 list_mng.grid(column=0)
 weather_text = Tk.Text(root)
 weather_text.config(width=25, height=12)
@@ -131,14 +131,12 @@ def remove_city_event():
     cities_listbox_update()
 
 
-dev_var = Tk.BooleanVar
+dev_var = Tk.BooleanVar()
 
 
 def save_event():
-    print(dev_var)
-    response = session.save_event()
-    if not session.dev:
-        root.destroy()
+    session.save["settings"]["dev"] = dev_var.get()
+    session.save_event()
 # TODO implement change settings
 
 
@@ -146,10 +144,12 @@ remove_city_button = Tk.Button(list_mng, command=remove_city_event, text=" - ")
 remove_city_button.grid(row=1, column=2, ipadx=2)
 
 save_button = Tk.Button(list_mng, command=save_event, text="Save & Quit")
-save_button.grid(row=3, columnspan=3)
+save_button.grid(row=2, columnspan=2)
 
 
-dev_button = Tk.Checkbutton(root, text="dev_ops", variable=dev_var, onvalue=True, offvalue=False)
+dev_button = Tk.Checkbutton(list_mng, text="dev_ops", variable=dev_var, onvalue=True, offvalue=False)
+if session.save["settings"]["dev"]:
+    dev_button.toggle()
 dev_button.grid(row=3)
 
 root.mainloop()
